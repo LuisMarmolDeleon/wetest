@@ -1,0 +1,34 @@
+﻿body {
+    margin: 0;
+    line-height: normal;
+}
+
+:root {
+    /* fonts */
+    --font-spartan: Spartan;
+    /* font sizes */
+    --font-size-xl: 20px;
+    --font-size-5xl: 24px;
+    --font-size-11xl: 30px;
+    --font-size-109xl: 128px;
+    /* Colors */
+    --color-white: #fff;
+    --color-whitesmoke: #f1f1f1;
+    --color-black: #000;
+    --color-forestgreen-100: #3eae49;
+    --color-forestgreen-200: rgba(62, 174, 73, 0.19);
+    --color-steelblue-100: #0271b9;
+    --color-steelblue-200: rgba(2, 113, 185, 0.19);
+    --color-goldenrod-100: #fdc432;
+    --color-goldenrod-200: rgba(253, 196, 50, 0.19);
+    --color-sandybrown-100: #ee9336;
+    --color-sandybrown-200: rgba(238, 147, 54, 0.19);
+    --color-crimson-100: #dc2227;
+    --color-crimson-200: rgba(220, 34, 39, 0.19);
+    --color-darkgray: #a0a0a0;
+    /* Paddings */
+    --padding-3xs: 10px;
+    --padding-44xl: 63px;
+    --padding-50xl: 69px;
+    --padding-25xl: 44px;
+}

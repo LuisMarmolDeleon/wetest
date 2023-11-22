@@ -1,0 +1,417 @@
+﻿@page
+@using System.Text.RegularExpressions
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    var i = 0;
+
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="initial-scale=1, width=device-width"/>
+
+    <link rel="stylesheet" href="./css/global.css"/>
+    <link rel="stylesheet" href="./css/style.css"/>
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Spartan:wght@400;600;700&display=swap"/>
+</head>
+<body>
+<form method="post">
+    <button type="submit" formaction="/Index?handler=ExportToPdf" id="exportPdfButton" style="position: fixed; bottom: 20px; right: 20px;">Exportar a PDF</button>
+</form>
+
+<div class="vulnerability-report">
+    <div class="frame">
+        <div class="frame1">
+            <div class="frame2">
+                <img
+                    class="frame-child"
+                    alt=""
+                    src="./lib/rectangle-12@2x.png"/>
+
+                <div class="title-logo">
+                    <img class="logo-icon" alt="" src="./lib/logo.svg"/>
+
+                    <b class="httpsgoogle-gruyereappspot">VULNERABILITY REPORT</b>
+                </div>
+                <div class="frame-item"></div>
+            </div>
+            <div class="frame3">
+                <div class="frame4">
+                    <div class="frame5">
+                        <div class="site">
+                            <img class="vector-icon" alt="" src="./lib/vector.svg"/>
+
+                            <b class="httpsgoogle-gruyereappspot">Site:</b>
+                            <div class="httpsgoogle-gruyereappspot">
+                                @Model.Root.site.ToString()
+                            </div>
+                        </div>
+                        <div class="scan-time">
+                            <img class="vector-icon1" alt="" src="./lib/vector1.svg"/>
+
+                            <b class="httpsgoogle-gruyereappspot">Scan Time:</b>
+                            <div class="httpsgoogle-gruyereappspot">
+                                @DateTime.Now;
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.Root.WebsiteScore >= 0 && Model.Root.WebsiteScore <= 24)
+                    {
+                        <div class="risk-level" style="background:#dd2227;">
+                            <b class="risk-level1">Security Level:</b>
+                            <b class="medium">LOW</b>
+                        </div>
+                    }
+                    else if (Model.Root.WebsiteScore >= 25 && Model.Root.WebsiteScore <= 49)
+                    {
+                        <div class="risk-level" style="background:#ee9336;">
+                            <b class="risk-level1">Risk Level:</b>
+                            <b class="medium">MEDIUM</b>
+                        </div>
+                    }
+                    else if (Model.Root.WebsiteScore >= 50 && Model.Root.WebsiteScore <= 74)
+
+                    {
+                        <div class="risk-level" style="background:#0271b9;">
+                            <b class="risk-level1">Risk Level:</b>
+                            <b class="medium">HIGH</b>
+                        </div>
+                    }
+                    else if (Model.Root.WebsiteScore >= 75)
+                    {
+                        <div class="risk-level" style="background:#3eae49;">
+                            <b class="risk-level1">Risk Level:</b>
+                            <b class="medium">EXCELENT</b>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<hr style="margin-top: 20px;
+                     margin-bottom: 20px;
+                     border: 0;
+                     border-top: 1px solid black;
+max-width: 2110px;  margin: auto;"/>
+
+<div class="container" style="max-width: 2110px; min-width: 2110px;">
+    <br> <br> <br> <br>
+    <h1 style="color: black">
+        <strong>Summary of alerts</strong>
+    </h1>
+    <br>
+    <div class="row justify-content">
+        <div class="col m-5 p-0" style="width: 681px; height: 284px;">
+            <div class=" text-white text-center py-20 rounded-top" style="width: 326px; height: 145px; background-color: #d7302f">
+                <strong style="font-size: 8em; align-content: center">@Model.HighAlerts.Count</strong>
+            </div>
+            <div class="bg-white border border-top-0 text-center py-8 rounded-bottom" style="width: 326px; height: 83px;">
+                <strong style="font-size: 2em;">High</strong>
+            </div>
+        </div>
+        <div class="col m-5 p-0" style="width: 781px; height: 384px;">
+            <div class=" text-white text-center py-20 rounded-top" style="width: 326px; height: 145px; background-color: #ea9544">
+                <strong style="font-size: 8em;">@Model.MediumAlerts.Count</strong>
+            </div>
+            <div class="bg-white border border-top-0 text-center py-8 rounded-bottom" style="width: 326px; height: 83px;">
+                <strong style="font-size: 2em;">Medium</strong>
+            </div>
+        </div>
+        <div class="col m-5 p-0" style="width: 781px; height: 384px;">
+            <div class=" text-white text-center py-20 rounded-top" style="width: 326px; height: 145px; background-color: #fac549">
+                <strong style="font-size: 8em;">@Model.LowAlerts.Count</strong>
+            </div>
+            <div class="bg-white border border-top-0 text-center py-8 rounded-bottom" style="width: 326px; height: 83px;">
+                <strong style="font-size: 2em;">Low</strong>
+            </div>
+        </div>
+        <div class="col m-5 p-0" style="width: 781px; height: 384px;">
+            <div class="text-white text-center py-20 rounded-top" style="width: 326px; height: 145px; background-color: #1970b6;">
+                <strong style="font-size: 8em;">@Model.InformationalAlerts.Count</strong>
+            </div>
+            <div class="bg-white border border-top-0 text-center py-8 rounded-bottom" style="width: 326px; height: 83px;">
+                <strong style="font-size: 2em;">Informational</strong>
+            </div>
+        </div>
+        <div class="col m-5 p-0" style="width: 781px; height: 384px;">
+            <div class=" text-white text-center py-20 rounded-top" style="width: 326px; height: 145px; background-color: #4eac51">
+                <strong style="font-size: 8em;">@Model.FalsePositiveAlert.Count</strong>
+            </div>
+            <div class="bg-white border border-top-0 text-center py-8 rounded-bottom" style="width: 326px; height: 83px;">
+                <strong style="font-size: 2em;">False Positive</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="max-width: 2110px; min-width: 2110px;">
+    <h1 style="color: black;">
+        <strong>Alerts</strong>
+    </h1>
+    <br> <br>
+
+    <table class="table" style="font-size: 200%;">
+        <thead class="text-white" style="background-color: black">
+        <tr>
+            <th scope="col" style="text-align: center">Name</th>
+            <th scope="col" style="width: 15%; text-align: center;">Risk Level</th>
+            <th scope="col" style="width: 20%; text-align: center">Number of Instances</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var High in Model.HighAlerts)
+        {
+            <tr style="background-color: #f1f1f1">
+                <td>@High.name</td>
+                <td class="text-white font-weight-bold" style="text-align: center;background-color: #d7302f">High</td>
+                <td style="text-align: center">@High.instances.Count</td>
+            </tr>
+        }
+
+        @foreach (var Medium in Model.MediumAlerts)
+        {
+            <tr style="background-color: #f1f1f1">
+                <td>@Medium.name</td>
+                <td class="text-white font-weight-bold" style="text-align: center; background-color: #ea9544">Medium</td>
+                <td style="text-align: center">@Medium.instances.Count</td>
+            </tr>
+        }
+
+        @foreach (var Low in Model.LowAlerts)
+        {
+            <tr style="background-color: #f1f1f1">
+                <td>@Low.name</td>
+                <td class="text-white font-weight-bold" style="text-align: center;background-color: #fac549">Low</td>
+                <td style="text-align: center">@Low.instances.Count</td>
+            </tr>
+        }
+
+        @foreach (var Info in Model.InformationalAlerts)
+        {
+            <tr style="background-color: #f1f1f1">
+                <td>@Info.name</td>
+                <td class="text-white font-weight-bold" style="text-align: center;background-color: #1970b6;">Informational</td>
+                <td style="text-align: center">@Info.instances.Count</td>
+            </tr>
+        }
+
+        @foreach (var FP in Model.FalsePositiveAlert)
+        {
+            <tr style="background-color: #f1f1f1">
+                <td>@FP.name</td>
+                <td class="text-white font-weight-bold" style="text-align: center;background-color: #4eac51">False Positive</td>
+                <td style="text-align: center">@FP.instances.Count</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div class="container" style="max-width: 2110px; min-width: 2110px;">
+    <br>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h1 style="color: black">
+        <strong>Alert Details</strong>
+    </h1>
+    <br>
+
+    <br>
+
+    <br>
+    <br>
+
+
+    @foreach (var High in Model.HighAlerts)
+    {
+        <table class="table" style="font-size: 200%;" id="High">
+            <thead class="text-white" style="background-color: black">
+            <tr>
+                <th scope="col" class="text-white" style="width: 15%; text-align: center; border-right: 2px solid white; background-color: #d6302f;">High</th>
+                <th scope="col" class="text-white bg-dark" style="width: 55%; text-align: center;">@High.name</th>
+            </tr>
+            </thead>
+            <tbody style="background-color: #f1f1f1">
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #f7d6d6;">Description</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(High.desc, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #f7d6d6;">Solution</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(High.solution, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #f7d6d6;">Reference</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(High.reference, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white;background-color: #f7d6d6;">Risk Code</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(High.riskcode, "<.*?>", "<br>");</td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <br/>
+        <br/>
+    }
+
+
+    @foreach (var Medium in Model.MediumAlerts)
+    {
+        <table class="table" style="font-size: 200%;">
+            <thead class="text-white" style="background-color: black">
+            <tr>
+                <th scope="col" class="text-white" style="width: 15%; text-align: center; border-right: 2px solid white; background-color: #ea9544;">Medium</th>
+                <th scope="col" class="text-white bg-dark" style="width: 55%; text-align: center;">@Medium.name</th>
+            </tr>
+            </thead>
+            <tbody style="background-color: #f1f1f1">
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #fbebda;">Description</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Medium.desc, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #fbebda;">Solution</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Medium.solution, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #fbebda;">Reference</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Medium.reference, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #fbebda;">Risk Code</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Medium.riskcode, "<.*?>", "<br>");</td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <br/>
+        <br/>
+    }
+
+
+    @foreach (var Low in Model.LowAlerts)
+    {
+        <table class="table" style="font-size: 200%;">
+            <thead class="text-white" style="background-color: black">
+            <tr>
+                <th scope="col" class="text-white" style="width: 15%; text-align: center; border-right: 2px solid white; background-color: #fac549;">Low</th>
+                <th scope="col" class="text-white bg-dark" style="width: 55%; text-align: center;">@Low.name</th>
+            </tr>
+            </thead>
+            <tbody style="background-color: #f1f1f1">
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #fef4da;">Description</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Low.desc, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #fef4da;">Solution</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Low.solution, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #fef4da;">Reference</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Low.reference, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #fef4da;">Risk Code</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Low.riskcode, "<.*?>", "<br>");</td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <br/>
+        <br/>
+    }
+
+    @foreach (var Info in Model.InformationalAlerts)
+    {
+        <table class="table" style="font-size: 200%;">
+            <thead class="text-white" style="background-color: black">
+            <tr>
+                <th scope="col" class="text-white" style="width: 15%; text-align: center; border-right: 2px solid white; background-color: #1970b6;">Informational</th>
+                <th scope="col" class="text-white bg-dark" style="width: 55%; text-align: center;">@Info.name</th>
+            </tr>
+            </thead>
+            <tbody style="background-color: #f1f1f1">
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #d0e4f1;">Description</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Info.desc, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #d0e4f1;">Solution</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Info.solution, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #d0e4f1;">Reference</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Info.reference, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #d0e4f1;">Risk Code</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(Info.riskcode, "<.*?>", "<br>");</td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <br/>
+        <br/>
+    }
+
+
+    @foreach (var FP in Model.FalsePositiveAlert)
+    {
+        <table class="table" style="font-size: 200%;">
+            <thead class="text-white" style="background-color: black">
+            <tr>
+                <th scope="col" class="text-white" style="width: 15%; text-align: center; border-right: 2px solid white; background-color: #4eac51;">False Positive</th>
+                <th scope="col" class="text-white bg-dark" style="width: 55%; text-align: center;">@FP.name</th>
+            </tr>
+            </thead>
+            <tbody style="background-color: #f1f1f1">
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #ddf0de;">Description</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(FP.desc, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #ddf0de;">Solution</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(FP.solution, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #ddf0de;">Reference</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(FP.reference, "<.*?>", string.Empty);</td>
+            </tr>
+            <tr>
+                <td style="border-right: 2px solid white; background-color: #ddf0de;">Risk Code</td>
+                <td style="word-wrap: break-word; max-width: 100px;">@Regex.Replace(FP.riskcode, "<.*?>", "<br>");</td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <br/>
+        <br/>
+    }
+
+</div>
+</body>
+</html>
